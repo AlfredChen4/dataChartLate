@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"> //CDN is a network that effectively increases speed of code to be more effective </script> 
+    <title>My Website</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <main>
+        <canvas id="myChart"></canvas>
+    </main>
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        async function getData() {
+         const response = await fetch("Hyperlocal_Temperature_Monitoring_20250102.csv");
+         const data = await response.text();
+         const rows = data.split("\n").slice(1);
+         const tempList = [];
+         const hourList = [];
+         rows.forEach((elem) => {
+           const row = elem.split(",");
+           const hour = row[3];
+           const temp = row[1];
+           console.log(hour, temp);
+           tempList.push(temp);
+           hourList.push(hour);
+         });
+         getChart(hourList,tempList)
+        }
+
+        async function getChart(hourList, tempList) {
+          new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [hourList[0],hourList[1],hourList[2],hourList[3],hourList[4],hourList[5],hourList[6],hourList[7]],
+            datasets: [{
+              label: 'Local Temperature',
+              data: [tempList[0],tempList[1],tempList[2],tempList[3],tempList[4],tempList[5],tempList[6],tempList[7]],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+           }
+          });
+         }
+        getData()
+    </script>
+  </body>
+</html>
